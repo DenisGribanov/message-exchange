@@ -2,7 +2,10 @@
 using Domain.Abstractions;
 using Domain.Services;
 using Infrastructure;
+using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Models;
 using Serilog;
+using System.Reflection;
 namespace Api
 {
     public class Program
@@ -19,9 +22,19 @@ namespace Api
             builder.Services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
-            //builder.Logging.AddSerilog();
-            
+            builder.Services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Version = "v1",
+                    Title = "MessageExchange",
+                    Description = "MessageExchange API",
+                });
+
+                var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
+            });
+
             AddDependencies(builder.Services);
 
             builder.Host.UseSerilog((context, loggerConfiguration) =>

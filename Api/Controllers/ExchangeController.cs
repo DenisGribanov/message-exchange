@@ -2,8 +2,10 @@ using Domain.Abstractions;
 using Domain.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Net.Sockets;
 using System.Net.WebSockets;
+using System.Runtime.CompilerServices;
 
 namespace Api.Controllers
 {
@@ -35,7 +37,7 @@ namespace Api.Controllers
         /// <param name="number">порядковый номер сообщения</param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Send([FromBody] string message, long number)
+        public async Task<IActionResult> Send([FromBody] [MaxLength(128)] string message, [Required]long number)
         {
             await _exchangeService.SaveMessage(new Domain.Models.MessageModel { Text = message, Number = number, DateTimeCreated = DateTime.UtcNow });
             return Ok();
