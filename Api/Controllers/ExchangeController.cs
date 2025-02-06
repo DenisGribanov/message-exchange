@@ -1,12 +1,8 @@
 using Domain.Abstractions;
 using Domain.Models;
-using Domain.Services;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.ComponentModel.DataAnnotations;
-using System.Net.Sockets;
 using System.Net.WebSockets;
-using System.Runtime.CompilerServices;
 
 namespace Api.Controllers
 {
@@ -18,17 +14,14 @@ namespace Api.Controllers
         private readonly ILogger<ExchangeController> _logger;
         private readonly IExchangeService _exchangeService;
         private readonly IWsConnectionManager _webSocketConnectionManager;
-        private readonly IDataStore _dataStore;
 
         public ExchangeController(ILogger<ExchangeController> logger,
                 IExchangeService exchangeService,
-                IWsConnectionManager webSocketConnectionManager,
-                IDataStore dataStore)
+                IWsConnectionManager webSocketConnectionManager)
         {
             _logger = logger;
             _exchangeService = exchangeService;
             _webSocketConnectionManager = webSocketConnectionManager;
-            _dataStore = dataStore;
         }
 
         /// <summary>
@@ -39,7 +32,7 @@ namespace Api.Controllers
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Send([FromBody] [MaxLength(128)] string message, [Required]long number, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> Send([FromBody][MaxLength(128)] string message, [Required] long number, CancellationToken cancellationToken = default)
         {
             await _exchangeService.SaveMessage(new MessageModel { Text = message, Number = number, DateTimeCreated = DateTime.UtcNow }, cancellationToken);
             return Ok();
@@ -53,25 +46,24 @@ namespace Api.Controllers
         [HttpGet("ws")]
         public async Task Ws(CancellationToken cancellationToken)
         {
-            if (HttpContext.WebSockets.IsWebSocketRequest)
-            {
-                var webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync();
-                var wsGuid = _webSocketConnectionManager.AddSocket(webSocket);
-
-                _logger.LogInformation("Новое WS соединение {guid}", wsGuid);
-
-                var buffer = new ArraySegment<byte>(new byte[4096]);
-                WebSocketReceiveResult? received = await webSocket.ReceiveAsync(buffer, cancellationToken);
-
-                if (received != null && received.CloseStatus != null)
-                {
-                    _logger.LogInformation("WS соединение {guid} закрыто", wsGuid);
-                    _webSocketConnectionManager.RemoveSocket(wsGuid);
-                }
-            }
-            else
+            if (!HttpContext.WebSockets.IsWebSocketRequest)
             {
                 _logger.LogWarning("Данное подключение не WS");
+                return;
+            }
+
+            var webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync();
+            var wsGuid = _webSocketConnectionManager.AddSocket(webSocket);
+
+            _logger.LogInformation("Новое WS соединение {guid}", wsGuid);
+
+            var buffer = new ArraySegment<byte>(new byte[4096]);
+            WebSocketReceiveResult? received = await webSocket.ReceiveAsync(buffer, cancellationToken);
+
+            if (received != null && received.CloseStatus != null)
+            {
+                _logger.LogInformation("WS соединение {guid} закрыто", wsGuid);
+                _webSocketConnectionManager.RemoveSocket(wsGuid);
             }
         }
 
