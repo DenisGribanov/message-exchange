@@ -1,0 +1,15 @@
+2025-02-06 15:48:49.785 +03:00 [INF] Now listening on: http://localhost:5256
+2025-02-06 15:48:49.823 +03:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-02-06 15:48:49.825 +03:00 [INF] Hosting environment: Development
+2025-02-06 15:48:49.826 +03:00 [INF] Content root path: C:\Users\user\Documents\GitHub\message-exchange\Api
+2025-02-06 15:49:01.071 +03:00 [INF] {"Id":0,"Number":1111,"Text":"string","DateTimeCreated":"2025-02-06T12:49:01.0514537Z","$type":"MessageModel"}
+2025-02-06 15:49:01.097 +03:00 [INF] HTTP POST /Exchange responded 200 in 182.7266 ms
+2025-02-06 15:49:27.343 +03:00 [INF] Новое WS соединение "2fdb7ac6-3023-49b0-93d8-f75ee43e0331"
+2025-02-06 15:49:34.290 +03:00 [INF] {"Id":0,"Number":1111,"Text":"stringwqeqweqwe","DateTimeCreated":"2025-02-06T12:49:34.2901468Z","$type":"MessageModel"}
+2025-02-06 15:49:34.301 +03:00 [INF] WS клиенту "2fdb7ac6-3023-49b0-93d8-f75ee43e0331" передано сообщение {"Id":0,"Number":1111,"Text":"stringwqeqweqwe","DateTimeCreated":"2025-02-06T12:49:34.2901468Z","$type":"MessageModel"}
+2025-02-06 15:49:34.307 +03:00 [INF] HTTP POST /Exchange responded 200 in 21.4591 ms
+2025-02-06 15:49:50.904 +03:00 [INF] Новое WS соединение "8fcdeec5-173b-4e86-a43c-981ccf21fb7e"
+2025-02-06 15:50:01.262 +03:00 [INF] {"Id":0,"Number":1111222,"Text":"stringwqeqweqw111111111111111111e","DateTimeCreated":"2025-02-06T12:50:01.2623581Z","$type":"MessageModel"}
+2025-02-06 15:50:01.270 +03:00 [INF] WS клиенту "2fdb7ac6-3023-49b0-93d8-f75ee43e0331" передано сообщение {"Id":0,"Number":1111222,"Text":"stringwqeqweqw111111111111111111e","DateTimeCreated":"2025-02-06T12:50:01.2623581Z","$type":"MessageModel"}
+2025-02-06 15:50:01.276 +03:00 [INF] WS клиенту "8fcdeec5-173b-4e86-a43c-981ccf21fb7e" передано сообщение {"Id":0,"Number":1111222,"Text":"stringwqeqweqw111111111111111111e","DateTimeCreated":"2025-02-06T12:50:01.2623581Z","$type":"MessageModel"}
+2025-02-06 15:50:01.280 +03:00 [INF] HTTP POST /Exchange responded 200 in 18.4724 ms
