@@ -9,7 +9,7 @@ namespace Domain.Abstractions
 {
     public interface IExchangeService
     {
-        Task<List<MessageModelResponse>> GetLastMessages();
-        Task SaveMessage(MessageModel message);
+        Task<List<MessageModelResponse>> GetLastMessages(CancellationToken cancellationToken = default);
+        Task SaveMessage(MessageModel message, CancellationToken cancellationToken = default);
     }
 }

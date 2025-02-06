@@ -23,14 +23,14 @@ namespace Domain.Services
             _mapper = mapper;
         }
 
-        public async Task<List<MessageModelResponse>> GetLastMessages()
+        public async Task<List<MessageModelResponse>> GetLastMessages(CancellationToken cancellationToken = default)
         {
             var list = await _dataStore.GetLastMessages();
 
             return _mapper.Map<List<MessageModelResponse>>(list);
         }
 
-        public async Task SaveMessage(MessageModel message)
+        public async Task SaveMessage(MessageModel message, CancellationToken cancellationToken = default)
         {
             await _dataStore.SaveMessage(message);
 
@@ -39,9 +39,11 @@ namespace Domain.Services
 
             foreach (var socket in _webSocketConnectionManager.GetAllSockets())
             {
+                if (cancellationToken.IsCancellationRequested) break;
+
                 if (socket.Value.State == WebSocketState.Open)
                 {
-                    await socket.Value.SendAsync(jsonByte, WebSocketMessageType.Text, true, CancellationToken.None);
+                    await socket.Value.SendAsync(jsonByte, WebSocketMessageType.Text, true, default);
                     _logger.LogInformation("WS клиенту {guid} передано сообщение {@model}", socket.Key, message);
                 }
             }

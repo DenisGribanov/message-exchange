@@ -36,11 +36,12 @@ namespace Api.Controllers
         /// </summary>
         /// <param name="message">текст сообщения</param>
         /// <param name="number">порядковый номер сообщения</param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [HttpPost]
-        public async Task<IActionResult> Send([FromBody] [MaxLength(128)] string message, [Required]long number)
+        public async Task<IActionResult> Send([FromBody] [MaxLength(128)] string message, [Required]long number, CancellationToken cancellationToken = default)
         {
-            await _exchangeService.SaveMessage(new Domain.Models.MessageModel { Text = message, Number = number, DateTimeCreated = DateTime.UtcNow });
+            await _exchangeService.SaveMessage(new MessageModel { Text = message, Number = number, DateTimeCreated = DateTime.UtcNow }, cancellationToken);
             return Ok();
         }
 
@@ -60,8 +61,7 @@ namespace Api.Controllers
                 _logger.LogInformation("Новое WS соединение {guid}", wsGuid);
 
                 var buffer = new ArraySegment<byte>(new byte[4096]);
-                WebSocketReceiveResult? received = null;
-                received = await webSocket.ReceiveAsync(buffer, cancellationToken);
+                WebSocketReceiveResult? received = await webSocket.ReceiveAsync(buffer, cancellationToken);
 
                 if (received != null && received.CloseStatus != null)
                 {
@@ -80,9 +80,9 @@ namespace Api.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("last")]
-        public async Task<IActionResult> GetLast()
+        public async Task<IActionResult> GetLast(CancellationToken cancellationToken = default)
         {
-            var result = await _exchangeService.GetLastMessages();
+            var result = await _exchangeService.GetLastMessages(cancellationToken);
             return Ok(result);
         }
     }
