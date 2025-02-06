@@ -1,14 +1,10 @@
 ﻿using Domain.Abstractions;
 using Domain.Models;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Npgsql;
 using System.Data;
-using Microsoft.Extensions.Configuration;
+using System.Text;
 
 namespace Infrastructure
 {
@@ -23,7 +19,7 @@ namespace Infrastructure
             _connectionString = configuration.GetConnectionString("Connection");
         }
 
-        public async Task<List<MessageModel>> GetLastMessages()
+        public async Task<List<MessageModel>> GetMessages(DateTime dateStart, DateTime dateEnd)
         {
             List<MessageModel> result = new List<MessageModel>();
 
@@ -32,9 +28,11 @@ namespace Infrastructure
             NpgsqlCommand cmd = new NpgsqlCommand();
 
             cmd.Connection = connection;
-            cmd.CommandText = "SELECT \"Id\", \"Number\", \"Text\", \"DateCreated\" FROM public.\"Messages\" WHERE \"DateCreated\" > now() - interval '10 minute'";
+            cmd.CommandText = "SELECT \"Id\", \"Number\", \"Text\", \"DateCreated\" FROM public.\"Messages\" WHERE \"DateCreated\" >= @dateStart AND \"DateCreated\" <= @dateEnd";
+            cmd.Parameters.AddWithValue("dateStart", NpgsqlTypes.NpgsqlDbType.TimestampTz, dateStart);
+            cmd.Parameters.AddWithValue("dateEnd", NpgsqlTypes.NpgsqlDbType.TimestampTz, dateEnd);
             cmd.CommandType = System.Data.CommandType.Text;
-            
+
             using (var dataReader = await cmd.ExecuteReaderAsync())
             {
                 while (dataReader.Read())

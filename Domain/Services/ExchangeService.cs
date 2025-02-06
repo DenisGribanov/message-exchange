@@ -23,9 +23,9 @@ namespace Domain.Services
             _mapper = mapper;
         }
 
-        public async Task<List<MessageModelResponse>> GetLastMessages(CancellationToken cancellationToken = default)
+        public async Task<List<MessageModelResponse>> GetMessages(DateTime dateStart, DateTime dateEnd, CancellationToken cancellationToken = default)
         {
-            var list = await _dataStore.GetLastMessages();
+            var list = await _dataStore.GetMessages(dateStart, dateEnd);
 
             return _mapper.Map<List<MessageModelResponse>>(list);
         }

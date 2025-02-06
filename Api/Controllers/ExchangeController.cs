@@ -67,14 +67,17 @@ namespace Api.Controllers
             }
         }
 
+        [HttpGet]
         /// <summary>
         /// показать список из последних сообщений
         /// </summary>
+        /// <param name="dateStart"></param>
+        /// <param name="dateEnd"></param>
+        /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        [HttpGet("last")]
-        public async Task<IActionResult> GetLast(CancellationToken cancellationToken = default)
+        public async Task<IActionResult> GetMessages([FromQuery] DateTime dateStart, DateTime dateEnd, CancellationToken cancellationToken = default)
         {
-            var result = await _exchangeService.GetLastMessages(cancellationToken);
+            var result = await _exchangeService.GetMessages(dateStart, dateEnd, cancellationToken);
             return Ok(result);
         }
     }
