@@ -1,0 +1,11 @@
+﻿CREATE TABLE public."Messages"
+(
+    "Id" bigint NOT NULL,
+    "Number" bigint NOT NULL,
+    "Text" text NOT NULL,
+    "DateCreated" timestamp with time zone NOT NULL,
+    PRIMARY KEY ("Id")
+);
+
+ALTER TABLE IF EXISTS public."Messages"
+    OWNER to postgres;

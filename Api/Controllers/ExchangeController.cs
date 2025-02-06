@@ -15,14 +15,25 @@ namespace Api.Controllers
         private readonly ILogger<ExchangeController> _logger;
         private readonly IExchangeService _exchangeService;
         private readonly WebSocketConnectionManager _webSocketConnectionManager;
+        private readonly IDataStore _dataStore;
 
-        public ExchangeController(ILogger<ExchangeController> logger, IExchangeService exchangeService, WebSocketConnectionManager webSocketConnectionManager)
+        public ExchangeController(ILogger<ExchangeController> logger,
+                IExchangeService exchangeService,
+                WebSocketConnectionManager webSocketConnectionManager,
+                IDataStore dataStore)
         {
             _logger = logger;
             _exchangeService = exchangeService;
             _webSocketConnectionManager = webSocketConnectionManager;
+            _dataStore = dataStore;
         }
 
+        /// <summary>
+        /// Отправить сообщение
+        /// </summary>
+        /// <param name="message">текст сообщения</param>
+        /// <param name="number">порядковый номер сообщения</param>
+        /// <returns></returns>
         [HttpPost]
         public async Task<IActionResult> Send([FromBody] string message, long number)
         {
@@ -30,6 +41,11 @@ namespace Api.Controllers
             return Ok();
         }
 
+        /// <summary>
+        /// ws подулючение к обмену
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
         [HttpGet("ws")]
         public async Task Ws(CancellationToken cancellationToken)
         {
@@ -54,6 +70,17 @@ namespace Api.Controllers
             {
                 _logger.LogWarning("Данное подключение не WS");
             }
+        }
+
+        /// <summary>
+        /// показать список из последних сообщений
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("last")]
+        public async Task<IActionResult> GetLast()
+        {
+            var l = await _dataStore.GetLastMessages();
+            return Ok(l);
         }
     }
 }

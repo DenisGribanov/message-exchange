@@ -11,6 +11,6 @@ namespace Domain.Abstractions
     {
         Task SaveMessage(MessageModel store);
 
-        Task<List<MessageModel>> GetMessages();
+        Task<List<MessageModel>> GetLastMessages();
     }
 }

@@ -27,7 +27,7 @@ namespace Api
             builder.Host.UseSerilog((context, loggerConfiguration) =>
             {
                 loggerConfiguration.WriteTo.Console();
-                loggerConfiguration.WriteTo.File("log.txt");
+                loggerConfiguration.WriteTo.File("logs.log");
                 loggerConfiguration.ReadFrom.Configuration(context.Configuration);
             });
 
