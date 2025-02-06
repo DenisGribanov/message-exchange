@@ -9,6 +9,7 @@ namespace Domain.Abstractions
 {
     public interface IExchangeService
     {
+        Task<List<MessageModelResponse>> GetLastMessages();
         Task SaveMessage(MessageModel message);
     }
 }

@@ -6,13 +6,12 @@ using System.Threading.Tasks;
 
 namespace Domain.Models
 {
-    public class MessageModel
+    public class MessageModelResponse
     {
         public long Number { get; set; }
 
         public required string Text { get; set; }
 
         public DateTime DateTimeCreated { get; set; }
-
     }
 }

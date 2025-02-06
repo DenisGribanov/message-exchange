@@ -41,7 +41,6 @@ namespace Infrastructure
                 {
                     result.Add(new MessageModel
                     {
-                        Id = dataReader.GetInt64("Id"),
                         Number = dataReader.GetInt64("Number"),
                         Text = dataReader.GetString("Text"),
                         DateTimeCreated = dataReader.GetDateTime("DateCreated")

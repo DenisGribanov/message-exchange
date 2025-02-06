@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Abstractions;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,9 +7,9 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Services
+namespace Infrastructure
 {
-    public class WebSocketConnectionManager
+    public class WsConnectionManager : IWsConnectionManager
     {
         private static readonly ConcurrentDictionary<Guid, WebSocket> _sockets = new ConcurrentDictionary<Guid, WebSocket>();
 

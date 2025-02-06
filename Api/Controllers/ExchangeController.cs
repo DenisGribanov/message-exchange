@@ -1,4 +1,5 @@
 using Domain.Abstractions;
+using Domain.Models;
 using Domain.Services;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -16,12 +17,12 @@ namespace Api.Controllers
 
         private readonly ILogger<ExchangeController> _logger;
         private readonly IExchangeService _exchangeService;
-        private readonly WebSocketConnectionManager _webSocketConnectionManager;
+        private readonly IWsConnectionManager _webSocketConnectionManager;
         private readonly IDataStore _dataStore;
 
         public ExchangeController(ILogger<ExchangeController> logger,
                 IExchangeService exchangeService,
-                WebSocketConnectionManager webSocketConnectionManager,
+                IWsConnectionManager webSocketConnectionManager,
                 IDataStore dataStore)
         {
             _logger = logger;
@@ -81,8 +82,8 @@ namespace Api.Controllers
         [HttpGet("last")]
         public async Task<IActionResult> GetLast()
         {
-            var l = await _dataStore.GetLastMessages();
-            return Ok(l);
+            var result = await _exchangeService.GetLastMessages();
+            return Ok(result);
         }
     }
 }

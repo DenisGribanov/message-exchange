@@ -6,6 +6,8 @@ using Microsoft.Extensions.Options;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using System.Reflection;
+using AutoMapper;
+using Domain;
 namespace Api
 {
     public class Program
@@ -68,9 +70,11 @@ namespace Api
 
         public static IServiceCollection AddDependencies(IServiceCollection services)
         {
+            services.AddAutoMapper(typeof(AppMappingProfile));
+
             services.AddScoped<IDataStore, DataStore>();
             services.AddScoped<IExchangeService, ExchangeService>();
-            services.AddSingleton<WebSocketConnectionManager>();
+            services.AddSingleton<IWsConnectionManager, WsConnectionManager>();
 
             return services;
         }
