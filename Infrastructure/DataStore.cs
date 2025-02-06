@@ -58,7 +58,32 @@ namespace Infrastructure
 
         public async Task SaveMessage(MessageModel message)
         {
-            _logger.LogInformation("{@model}", message);
+            NpgsqlConnection connection = new NpgsqlConnection(_connectionString);
+            connection.Open();
+            NpgsqlCommand cmd = new NpgsqlCommand();
+
+            cmd.Connection = connection;
+            cmd.CommandText = "INSERT INTO public.\"Messages\" (\"Number\", \"Text\", \"DateCreated\") VALUES (@num, @text, @date)\r\n   RETURNING \"Id\"";
+            cmd.Parameters.AddWithValue("num", message.Number);
+            cmd.Parameters.AddWithValue("text", message.Text);
+            cmd.Parameters.AddWithValue("date", message.DateTimeCreated);
+
+            cmd.CommandType = System.Data.CommandType.Text;
+
+            long id = default;
+
+            using (var dataReader = await cmd.ExecuteReaderAsync())
+            {
+                while (dataReader.Read())
+                {
+                    id = dataReader.GetInt64(0);
+                }
+            }
+
+            connection.Dispose();
+            cmd.Dispose();
+
+            _logger.LogInformation("Добавлена запись в БД id - {@Id}", id);
         }
     }
 }
