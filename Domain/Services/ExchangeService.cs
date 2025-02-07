@@ -3,6 +3,8 @@ using Domain.Abstractions;
 using Domain.Models;
 using Microsoft.Extensions.Logging;
 using System.Net.WebSockets;
+using System.Text.Encodings.Web;
+using System.Text.Json;
 using System.Threading;
 
 namespace Domain.Services
@@ -35,7 +37,13 @@ namespace Domain.Services
         {
             await _dataStore.SaveMessage(message);
 
-            var jsonMsg = System.Text.Json.JsonSerializer.Serialize(message);
+            JsonSerializerOptions options = new JsonSerializerOptions
+            {
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+                WriteIndented = true
+            };
+
+            var jsonMsg = System.Text.Json.JsonSerializer.Serialize(message, options);
             var jsonByte = System.Text.Encoding.UTF8.GetBytes(jsonMsg)!;
             
             await Task.WhenAll(SendToWs(jsonByte, jsonMsg));
