@@ -1,4 +1,4 @@
-using Domain.Abstractions;
+п»їusing Domain.Abstractions;
 using Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -31,10 +31,10 @@ namespace Api.Controllers
         }
 
         /// <summary>
-        /// Отправить сообщение
+        /// РћС‚РїСЂР°РІРёС‚СЊ СЃРѕРѕР±С‰РµРЅРёРµ
         /// </summary>
-        /// <param name="message">текст сообщения</param>
-        /// <param name="number">порядковый номер сообщения</param>
+        /// <param name="message">С‚РµРєСЃС‚ СЃРѕРѕР±С‰РµРЅРёСЏ</param>
+        /// <param name="number">РїРѕСЂСЏРґРєРѕРІС‹Р№ РЅРѕРјРµСЂ СЃРѕРѕР±С‰РµРЅРёСЏ</param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
         [HttpPost]
@@ -45,7 +45,7 @@ namespace Api.Controllers
         }
 
         /// <summary>
-        /// ws подулючение к обмену
+        /// ws РїРѕРґСѓР»СЋС‡РµРЅРёРµ Рє РѕР±РјРµРЅСѓ
         /// </summary>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
@@ -54,28 +54,28 @@ namespace Api.Controllers
         {
             if (!HttpContext.WebSockets.IsWebSocketRequest)
             {
-                _logger.LogWarning("Данное подключение не WS");
+                _logger.LogWarning("Р”Р°РЅРЅРѕРµ РїРѕРґРєР»СЋС‡РµРЅРёРµ РЅРµ WS");
                 return;
             }
 
             var webSocket = await HttpContext.WebSockets.AcceptWebSocketAsync();
             var wsGuid = _webSocketConnectionManager.AddSocket(webSocket);
 
-            _logger.LogInformation("Новое WS соединение {guid}", wsGuid);
+            _logger.LogInformation("РќРѕРІРѕРµ WS СЃРѕРµРґРёРЅРµРЅРёРµ {guid}", wsGuid);
 
             var buffer = new ArraySegment<byte>(new byte[4096]);
             WebSocketReceiveResult? received = await webSocket.ReceiveAsync(buffer, cancellationToken);
 
             if (received != null && received.CloseStatus != null)
             {
-                _logger.LogInformation("WS соединение {guid} закрыто", wsGuid);
+                _logger.LogInformation("WS СЃРѕРµРґРёРЅРµРЅРёРµ {guid} Р·Р°РєСЂС‹С‚Рѕ", wsGuid);
                 _webSocketConnectionManager.RemoveSocket(wsGuid);
             }
         }
 
         [HttpGet("list")]
         /// <summary>
-        /// показать список из последних сообщений
+        /// РїРѕРєР°Р·Р°С‚СЊ СЃРїРёСЃРѕРє РёР· РїРѕСЃР»РµРґРЅРёС… СЃРѕРѕР±С‰РµРЅРёР№
         /// </summary>
         /// <param name="dateStart"></param>
         /// <param name="dateEnd"></param>
