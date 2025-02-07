@@ -3,6 +3,7 @@ using Domain.Abstractions;
 using Domain.Models;
 using Microsoft.Extensions.Logging;
 using System.Net.WebSockets;
+using System.Threading;
 
 namespace Domain.Services
 {
@@ -35,16 +36,19 @@ namespace Domain.Services
             await _dataStore.SaveMessage(message);
 
             var jsonMsg = System.Text.Json.JsonSerializer.Serialize(message);
-            var jsonByte = System.Text.Encoding.UTF8.GetBytes(jsonMsg);
+            var jsonByte = System.Text.Encoding.UTF8.GetBytes(jsonMsg)!;
+            
+            await Task.WhenAll(SendToWs(jsonByte, jsonMsg));
+        }
 
+        private IEnumerable<Task> SendToWs(byte[] jsonByte, string message)
+        {
             foreach (var socket in _webSocketConnectionManager.GetAllSockets())
             {
-                if (cancellationToken.IsCancellationRequested) break;
-
                 if (socket.Value.State == WebSocketState.Open)
                 {
-                    await socket.Value.SendAsync(jsonByte, WebSocketMessageType.Text, true, default);
                     _logger.LogInformation("WS клиенту {guid} передано сообщение {@model}", socket.Key, message);
+                    yield return socket.Value.SendAsync(jsonByte, WebSocketMessageType.Text, true, default);
                 }
             }
         }
