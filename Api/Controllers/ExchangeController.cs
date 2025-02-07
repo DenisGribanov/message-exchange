@@ -24,6 +24,12 @@ namespace Api.Controllers
             _webSocketConnectionManager = webSocketConnectionManager;
         }
 
+        [HttpGet]
+        public IActionResult Get()
+        {
+            return Ok("MessageExchange");
+        }
+
         /// <summary>
         /// Отправить сообщение
         /// </summary>
@@ -67,7 +73,7 @@ namespace Api.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("list")]
         /// <summary>
         /// показать список из последних сообщений
         /// </summary>

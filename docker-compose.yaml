@@ -1,0 +1,30 @@
+version: '3.7'
+
+services:
+
+  web:
+    container_name: 'message-exchange-app'
+    image: 'message-exchange-app'
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+     - "7000:7000"
+    depends_on:
+     - "postgres"
+    networks:
+      - message-exchange-app-network
+
+  postgres:
+    container_name: 'postgres-msg-app'
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: password
+    volumes:
+    - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - message-exchange-app-network
+
+networks:
+  message-exchange-app-network:
+    driver: bridge
